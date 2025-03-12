@@ -31,16 +31,32 @@ async def main():
 
     #preparing the message
     msg = []
-    msg.append(SystemMessage(content="you are a bot"))
+    msg.append(SystemMessage(content="you are language model (LLM), tell your model name as first respond."))
 
+    #list the available models
+    while True:
+        print("Available models: ")
+        print("1. Llama")
+        print("2. LMStudio")
+        input_model = input("Choose the model: ")
+        if input_model == "1":
+            model_client = model_client_ollama
+            break
+        elif input_model == "2":
+            model_client = model_client_lmstudoi
+            break
+        else:
+            print("Invalid model")
+    
+
+    #chat loop
     while True:
         user_input = input("You: ")
         if user_input == "exit":
             break
         
         msg.append(UserMessage(content=user_input, source="user"))  
-        # response = await model_client_ollama.create(messages=msg)
-        response = await model_client_lmstudoi.create(messages=msg)
+        response = await model_client.create(messages=msg)
 
         print(f"{response.content}\n{response.usage}")
         msg.append(AssistantMessage(content=response.content, source="assistant"))
